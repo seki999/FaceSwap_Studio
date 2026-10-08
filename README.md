@@ -90,6 +90,64 @@ python main.py
 
 图片预览独立于原图，缩放预览不改变保存尺寸。目标和来源任一人脸选择变化、导入、模型设置或重置会使旧结果失效。图片保存过程中不提供取消，以免误导使用者对已经提交的文件状态的判断。
 
+## 模型下载与放置（首次使用必做）
+
+**安装 Python 依赖不会安装模型。** 本仓库和 EXE 均不附带权重，软件也不会自动下载。需要手动准备以下三个 ONNX 文件，并确认用途符合模型许可。
+
+### 1. 从官方来源下载
+
+| 下载内容 | 官方来源 | 下载后需要的文件 |
+| --- | --- | --- |
+| `buffalo_l.zip` 模型包 | [InsightFace 官方 Model Zoo 发布页](https://github.com/deepinsight/insightface/releases/tag/model-zoo)，展开 **Assets**，选择 `buffalo_l.zip` | 解压后取出 `det_10g.onnx` 和 `w600k_r50.onnx` |
+| `inswapper_128.onnx` | [官方直接下载链接](https://github.com/deepinsight/insightface/releases/download/model-zoo/inswapper_128.onnx) | 直接使用下载得到的 `.onnx` 文件，不需要解压 |
+
+换脸模型链接来自 [InsightFace 官方换脸示例说明](https://github.com/deepinsight/insightface/blob/master/examples/in_swapper/README.md)。识别模型必须使用兼容的 `buffalo_l` 中的 `w600k_r50.onnx`，不要用其他识别模型替代。
+
+如果直接下载链接失效，请回到官方 Model Zoo 发布页查找同名文件。不要保存浏览器跳转后的 `release-assets.githubusercontent.com` 临时签名地址，该地址会过期。GitHub 显示 **Assets** 加载失败时，可刷新页面再试。下载得到的文件必须是实际模型，不能是错误网页或仅改名的文件。
+
+### 2. 放到项目的 models 目录
+
+源码运行时，将三个文件直接放进项目根目录的 `models/`，与 `main.py` 同级：
+
+```text
+FaceSwap_Studio/
+  main.py
+  models/
+    det_10g.onnx
+    w600k_r50.onnx
+    inswapper_128.onnx
+```
+
+例如项目位于 `D:\FaceSwap_Studio`，对应路径就是 `D:\FaceSwap_Studio\models\det_10g.onnx`。请将示例项目目录替换成你实际的项目目录。
+
+注意：不要只把 `buffalo_l.zip` 放进 models，也不要把两个文件留在 `models/buffalo_l/` 子目录而继续使用默认路径。默认配置要求三个文件直接位于 `models/` 下；如果保留子目录，下一步必须通过“浏览”选择其真实位置。
+
+使用打包 EXE 时，模型放到 **EXE 同级的 models 文件夹**：
+
+```text
+FaceSwapStudio/
+  FaceSwapStudio.exe
+  _internal/
+  models/
+    det_10g.onnx
+    w600k_r50.onnx
+    inswapper_128.onnx
+```
+
+不要放到 `_internal/` 中。也可以把模型保存在其他本地目录，然后通过设置选择绝对路径，无需重复复制。
+
+### 3. 在软件中配置
+
+1. 启动软件，点击右上角“模型设置”（首次缺少模型时自动弹出）。
+2. 点击“检测模型”右侧“浏览”，选择 `det_10g.onnx`。
+3. 点击“识别模型”右侧“浏览”，选择 `w600k_r50.onnx`。
+4. 点击“换脸模型”右侧“浏览”，选择 `inswapper_128.onnx`。
+5. 点击 **Save** 保存，再导入来源和目标图片进行检测与换脸。
+
+框中的 `models/...` 只是默认路径；点击 Save 不会生成模型。如果提示“缺少或无效的本地 ONNX 模型：detector_path”，表示检测模型文件不存在或路径不正确，请重新浏览选择真实文件。其他两项也需要实际存在。
+
+**许可说明：** 官方 Model Zoo 将预训练模型标注为仅用于非商业研究。个人使用不自动等于符合许可；商业或其他不在许可范围内的用途，应向官方确认并取得适当授权。请分别核对代码与权重许可：[官方仓库授权说明](https://github.com/deepinsight/insightface#license)。项目不再分发这些模型，也不会将本地 `.onnx` 文件提交到 Git。
+
 ## 模型配置和授权
 
 见 [模型说明](docs/MODELS.md)。默认配置 `config/model_config.json` 使用项目根目录下 `models/` 相对路径。设置保存到 `%LOCALAPPDATA%/FaceSwapStudio/model_config.json`，优先于仓库默认配置。打包后相对路径基于 EXE 所在目录，模型不放在 `_internal` 或 onefile 临时解压目录。

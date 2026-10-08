@@ -1,0 +1,17 @@
+.venv/
+.tools/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.onnx
+*.onnx.data
+build/
+dist/
+*.spec
+config/model_config.local.json
+*.log
+private/
+*.log
+*-smoke.json
+
+.venv-backup-*/

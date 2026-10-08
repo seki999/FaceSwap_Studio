@@ -1,0 +1,8 @@
+{
+  "detector_path": "models/det_10g.onnx",
+  "recognition_path": "models/w600k_r50.onnx",
+  "swapper_path": "models/inswapper_128.onnx",
+  "recognition_family": "buffalo_l_w600k_r50",
+  "inference_provider": "CPUExecutionProvider",
+  "sha256": {}
+}
